@@ -39,15 +39,25 @@ const (
 	LBRACE = "{"
 	RBRACE = "}"
 
-	// identifiers
+	// keywords
 	LET      = "LET"
 	FUNCTION = "FUNCTION"
+	TRUE     = "TRUE"
+	FALSE    = "FALSE"
+	IF       = "IF"
+	ELSE     = "ELSE"
+	RETURN   = "RETURN"
 )
 
 // keyword map
 var keywords = map[string]TokenType{
-	"let": LET,
-	"fn":  FUNCTION,
+	"let":    LET,
+	"fn":     FUNCTION,
+	"true":   TRUE,
+	"false":  FALSE,
+	"if":     IF,
+	"else":   ELSE,
+	"return": RETURN,
 }
 
 func LookUpIdent(ident string) TokenType {
