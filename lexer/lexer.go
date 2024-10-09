@@ -17,47 +17,12 @@ func New(input string) *Lexer {
 	return l
 }
 
-func (l *Lexer) readChar() {
-	if l.readPosition >= len(l.input) {
-		l.ch = 0
-	} else {
-		l.ch = l.input[l.readPosition]
-	}
-
-	l.position = l.readPosition
-	l.readPosition += 1
-}
-
-func (l *Lexer) skipWhitespace() {
-	for isWhitespace(l.ch) {
-		l.readChar()
-	}
-}
-
-func (l *Lexer) readSequence(cond func(byte) bool) string {
-	postion := l.position
-	for cond(l.ch) {
-		l.readChar()
-	}
-	return l.input[postion:l.position]
-}
-
-func (l *Lexer) readIdentifier() string {
-	return l.readSequence(isLetter)
-}
-
-func (l *Lexer) readNumber() string {
-	return l.readSequence(isDigit)
-}
-
 func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
 	l.skipWhitespace()
 
 	switch l.ch {
-	case '=':
-		tok = token.New(token.ASSIGN, string(l.ch))
 	case ',':
 		tok = token.New(token.COMMA, string(l.ch))
 	case '+':
@@ -72,8 +37,22 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.LPAREN, string(l.ch))
 	case ')':
 		tok = token.New(token.RPAREN, string(l.ch))
+	case '=':
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			tok = token.New(token.EQ, string([]byte{ch, l.ch}))
+		} else {
+			tok = token.New(token.ASSIGN, string(l.ch))
+		}
 	case '!':
-		tok = token.New(token.BANG, string(l.ch))
+		if l.peekChar() == '=' {
+			ch := l.ch
+			l.readChar()
+			tok = token.New(token.NOT_EQ, string([]byte{ch, l.ch}))
+		} else {
+			tok = token.New(token.BANG, string(l.ch))
+		}
 	case '-':
 		tok = token.New(token.MINUS, string(l.ch))
 	case '*':
