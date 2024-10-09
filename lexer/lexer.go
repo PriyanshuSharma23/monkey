@@ -72,15 +72,27 @@ func (l *Lexer) NextToken() token.Token {
 		tok = token.New(token.LPAREN, string(l.ch))
 	case ')':
 		tok = token.New(token.RPAREN, string(l.ch))
+	case '!':
+		tok = token.New(token.BANG, string(l.ch))
+	case '-':
+		tok = token.New(token.MINUS, string(l.ch))
+	case '*':
+		tok = token.New(token.ASTERISK, string(l.ch))
+	case '/':
+		tok = token.New(token.SLASH, string(l.ch))
+	case '<':
+		tok = token.New(token.LT, string(l.ch))
+	case '>':
+		tok = token.New(token.GT, string(l.ch))
 	default:
 		if isLetter(l.ch) {
 			tok.Literal = l.readIdentifier()
 			tok.Type = token.LookUpIdent(tok.Literal)
-			return tok // early return because readIdentifier already shifts one extra position
+			return tok
 		} else if isDigit(l.ch) {
 			tok.Type = token.INT
 			tok.Literal = l.readNumber()
-			return tok // early return because readIdentifier already shifts one extra position
+			return tok
 		} else {
 			tok = token.New(token.ILLEGAL, string(l.ch))
 		}
